@@ -1,129 +1,84 @@
-tgState
-==
+- [Docker构建个人网盘镜像](#Docker构建个人网盘镜像)
+    - [1.创建Dockerfile](#创建Dockerfile)
+    - [2.构建镜像](#构建镜像)
+    - [3.运行容器](#运行容器)
 
-[English](https://github.com/csznet/tgState/blob/main/README_en.md) 
+# Docker构建个人网盘镜像
+- 利用Telegram接口，无限容量，不限制文件格式，大文件会分片上传（速度挺慢），但不支持上传超大文件。
+- 上传成功会生成HTML、Markdown、BBCode三种形式的外链，可以用来当做图床、文件下载url。
+- 原作者地址：[https://github.com/csznet/tgState](https://github.com/csznet/tgState)
 
-一款以Telegram作为储存的文件外链系统
+## 创建Dockerfile
 
-可以作为telegram图床，也可以作为telegram网盘使用。
+所需本地文件都在`telegram_netdisc`目录下
 
-搭配CLoudFlare使用：https://www.csz.net/proj/tgstate/
+```bash
+cat << EOF > $PWD/Dockerfile
+# 使用官方的 Ubuntu 基础镜像
+FROM ubuntu:latest
 
-默认运行模式为图床模式，只允许`.jpg .png .jpeg`文件上传且限制不超过20MB，网盘模式为不限制后缀和大小  
+# 将本地的 .deb 文件复制到容器中
+COPY openssl.deb /tmp/openssl.deb
+COPY ca-certificates.deb /tmp/ca-certificates.deb
 
-如有疑惑，可以咨询TG @tgstate123  
+# 安装容器内的 .deb 文件
+RUN dpkg -i /tmp/openssl.deb && apt-get install -f
+RUN dpkg -i /tmp/ca-certificates.deb && apt-get install -f
 
-**版本说明**  
- - 1.2版本开始采用file_id形式留存外链，对以往版本外链不兼容，需要保留外链的谨慎更新  
- - 1.1版本开始只保留/d外链，对以往版本外链不兼容，需要保留外链的谨慎更新  
+# 将编译好的二进制文件复制到容器中
+COPY tgstate /app/tgState
 
-**特性**
- - 不限制上传文件大小（可选
- - 支持访问密码限制
- - 提供API
- - 支持Vercel一键搭建
+# 设置工作目录
+WORKDIR /app
 
-**Demo**
+# 设置暴露的端口
+EXPOSE 8088
 
-实时预览：https://tgstate.vercel.app / https://tgstate.ikun123.com/
-
-
-旧版本：https://tgtu.ikun123.com/  
-搭建在Vercel，大于5MB的文件不支持
-
-测试图片：
-
-![tgState](https://tgstate.vercel.app/d/BQACAgUAAx0EcyK3ugACByxlOR-Nfl4esavoO4zdaYIP_k1KYQACDAsAAkf4yFVpf_awaEkS8jAE)  
-
-**准备说明**
-部署前需要准备一个Telegram Bot(@botfather处申请)  
-如果是需要存储在频道，则需要将Bot拉入频道作为管理员，公开频道并自定义频道Link  
-
-后台管理
-===
-
-后台管理计划是全Telegram管理，Vercel目前不支持，目前实现的有：  
-
-获取FileID
----
-
-对bot聊天中的文件引用并回复```get```可以获取FileID，搭建地址+/d/+FileID即可访问资源
-
-
-Vercel部署
-====
-
- [点我传送至Vercel配置页面](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcsznet%2FtgState&env=token&env=channel&env=pass&env=mode&project-name=tgState&repository-name=tgState)  
-
- 1. ```token```填写你的bot token  
- 2. ```channel```可以为频道(@xxxx)，也可以为你的telegram id(@getmyid_bot获取)  
- 3. ```pass```填写访问密码，如不需要，直接填写```none```即可
- 4. ```mode```填写```pan```，代表以网盘模式运行,只需要以图床模式运行的话就随便填    
-
- Docker部署
-====
-
-pull镜像
-```
-docker pull csznet/tgstate:latest
+# 设置容器启动时要执行的命令
+CMD ["/app/tgState"]
+EOF
 ```
 
-启动
-```
-docker run -d -p 8088:8088 --name tgstate -e TOKEN=aaa -e CHANNEL=@bbb --net=host csznet/tgstate:latest
-```
+## 构建镜像
 
-请提前将```aaa```和```bbb```替换为你的bot token和频道地址or个人id  
+```bash
+# 构建镜像
+docker build -t yohann-netdisc .
 
-如果需要以网盘模式启动  
-
-```
-docker run -d -p 8088:8088 --name tgstate -e TOKEN=aaa -e CHANNEL=@bbb -e MODE=pan csznet/tgstate:latest
-```
-
-
- 二进制部署
-====
- 下载Linux amd64环境的二进制文件
- 
- ```
- wget https://github.com/csznet/tgState/releases/latest/download/tgState.zip && unzip tgState.zip && rm tgState.zip
- ```
-
-Linux arm64一键脚本：
- ```
- wget https://github.com/csznet/tgState/releases/latest/download/tgState_arm64.zip && unzip tgState_arm64.zip && rm tgState_arm64.zip
- ```
-
- 使用方法
-----
-
-```
- ./tgState -token xxxx -channel @xxxx
+# 以下操作可省略。。。
+# 登录个人docker
+docker login
+# 打标签
+docker tag yohann-netdisc:latest yohannfan/yohann-netdisc:1.0
+# 上传到个人docker镜像仓库
+docker push yohannfan/yohann-netdisc:1.0
 ```
 
-其中的```xxxx```为bot token ```@xxxx```为频道地址or个人id(个人ID只需要数字不需要@)
+## 运行容器
+- `TOKEN`是机器人token。
+- `CHANNEL`可以是频道地址也可以是chatId（可以通过[@getidsbot](https://t.me/getidsbot)这个机器人获取）。如果是频道，需要将频道公开，并将机器人拉入频道，设置为管理员，频道地址格式如：`@yohannChannl`。如果是chatId，可以通过私聊机器人，引用文件（不支持3MB~10MB左右的视频文件，亲测会直接停止服务，10MB以上的分片文件，引用`fileAll.txt`是支持的）并回复`get`获取文件id（base64编码），通过`域名`+`/d/`+`文件id`可以直接下载该文件，如果是图片则可以直接查看。
 
-如果需要自定义端口，可以带上-port参数，如
-```
--port 8888
-```
-如果不需要首页，只需要API和图片展示页面，则带上-index参数，如
-```
-./tgState -token xxxx -channel @xxxx -port 8888 -index
-```  
-如果需要限制密码访问，只需要带上-pass参数即可，如设置密码为csznet：  
-```
-./tgState -token xxxx -channel @xxxx -port 8888 -pass csznet
-```
+本地镜像启动：
 
-如果需要网盘模式运行，请带上-mode pan，如  
-
-```
-./tgState -token xxxx -channel @xxxx -port 8888 -mode pan
+```bash
+docker run -d -p 8088:8088 \
+--network=host \
+--name netdisc \
+-e TOKEN=xxx \
+-e CHANNEL=xxx \
+-e MODE=pan \
+yohann-netdisc:latest
 ```
 
-关于API  
-====
+个人镜像仓库镜像启动：
 
-直接将文件数据以二进制的方式发送给```/api```路径
+```bash
+docker run -d -p 8088:8088 \
+--network=host \
+--name netdisc \
+-e TOKEN=xxx \
+-e CHANNEL=xxx \
+-e MODE=pan \
+yohannfan/yohann-netdisc:1.0
+```
+
