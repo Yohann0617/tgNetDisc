@@ -10,7 +10,7 @@
 
 ## 创建Dockerfile
 
-所需本地文件都在`telegram_netdisc`目录下
+所需本地文件都在[telegram_netdisc](https://github.com/Yohann0617/config/tree/main/telegram-netdisc)目录下
 
 ```bash
 cat << EOF > $PWD/Dockerfile
