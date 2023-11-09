@@ -53,7 +53,6 @@
     $("#uploadButton").text("上传中");
     $("#loading").show();
 
-    // let url = "https://yo.yohann.buzz/api";
     let url = `${window.location.protocol}//${window.location.hostname}${window.location.port && window.location.port !== '80' ? ':' + window.location.port : ''}/api`;
     try {
       let response = await fetch(url, {
