@@ -5,7 +5,7 @@
 - 测试地址：[tgNetDisc](https://yo.yohann.buzz/netdisc)
 - 原作者地址：[https://github.com/csznet/tgState](https://github.com/csznet/tgState)
 
-## Docker一键启动（推荐🏆）
+## Docker一键部署（推荐🏆）
 - `TOKEN`是机器人token。
 - `CHANNEL`可以是频道地址也可以是chatId（可以通过 [@getidsbot](https://t.me/getidsbot) 这个机器人获取）。如果是频道，需要将频道公开，并将机器人拉入频道，设置为管理员，频道地址格式如：`@yohannChannl`。如果是chatId，可以通过私聊机器人，引用文件（不支持3MB~10MB左右的视频文件，亲测会直接停止服务，10MB以上的分片文件，引用`fileAll.txt`是支持的）并回复`get`获取文件id（base64编码），通过`域名`+`/d/`+`文件id`可以直接下载该文件，如果是图片则可以直接查看。
 
