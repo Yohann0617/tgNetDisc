@@ -3,9 +3,9 @@
 - Using the Telegram interface, unlimited capacity, no limit on file formats, large files will be uploaded in parts (the speed is quite slow), but it does not support uploading super large files.
 - If the upload is successful, three forms of external links will be generated: HTML, Markdown, and BB Code, which can be used as image beds and file download URLs.
 - Test address:[tgNetDisc](https://yo.yohann.buzz/netdisc)
-- Original Author's Address:[https://github.com/csznet/tgState](https://github.com/csznet/tgState)
+- Original Author's Address:[https://github.com/csznet/tgState](https://github.com/csznet/tgState) On this basis, some modifications are made.
 
-## Docker one-click start (recommended 🏆)
+## Docker One-click deployment (recommended 🏆)
 - `TOKEN`is a bot token.
 - `CHANNEL`It can be the channel address or the chatId (which can be obtained through the bot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the bot into the channel, set it as an administrator, and the channel address format is as follows: `@yohannChannl`. If it is chatId, you can get the file id (base64 encoding) through the private chat bot, reference file (video files around 3MB~10MB are not supported, the pro-test will directly stop the service, fragmented files of more than 10MB, reference `fileAll.txt` is supported) and reply `get` to get the file id (base64 encoding), through `domain name`+`/d`+`file id` can directly download the file, if it is a picture, you can view it directly.
 
