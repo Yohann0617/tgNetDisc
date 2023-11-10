@@ -53,9 +53,9 @@
     $("#uploadButton").text("上传中");
     $("#loading").show();
 
-    let url = `${window.location.protocol}//${window.location.hostname}${window.location.port && window.location.port !== '80' ? ':' + window.location.port : ''}/api`;
+    let url = `${window.location.protocol}//${window.location.hostname}${window.location.port && window.location.port !== '80' ? ':' + window.location.port : ''}`;
     try {
-      let response = await fetch(url, {
+      let response = await fetch(url + '/api', {
         method: 'POST',
         body: formData
       });
