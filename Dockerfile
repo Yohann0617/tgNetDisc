@@ -5,7 +5,7 @@ FROM ubuntu:latest
 RUN apt-get update && apt-get install -y ca-certificates
 
 # 将编译好的 server 和 client 二进制文件复制到容器中
-COPY tgState /app/tgState
+COPY tgstate /app/tgState
 
 # 设置工作目录
 WORKDIR /app
