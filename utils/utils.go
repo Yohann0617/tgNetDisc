@@ -5,8 +5,8 @@ import (
 	"io"
 	"log"
 
-	"csz.net/tgstate/conf"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"yohann/tgNetDisc/conf"
 )
 
 func TgFileData(fileName string, fileData io.Reader) tgbotapi.FileReader {

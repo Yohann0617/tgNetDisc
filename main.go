@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+
 	"os"
 
-	"csz.net/tgstate/conf"
-	"csz.net/tgstate/control"
-	"csz.net/tgstate/utils"
+	"yohann/tgNetDisc/conf"
+	"yohann/tgNetDisc/control"
+	"yohann/tgNetDisc/utils"
 )
 
 var webPort string

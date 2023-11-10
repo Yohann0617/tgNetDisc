@@ -10,9 +10,9 @@ import (
 	"regexp"
 	"strings"
 
-	"csz.net/tgstate/assets"
-	"csz.net/tgstate/conf"
-	"csz.net/tgstate/utils"
+	"yohann/tgNetDisc/assets"
+	"yohann/tgNetDisc/conf"
+	"yohann/tgNetDisc/utils"
 )
 
 // UploadImageAPI 上传文件api
