@@ -3,7 +3,7 @@
 - 利用Telegram接口，无限容量，不限制文件格式，大文件会分片上传（速度不快），但不支持上传超大文件。
 - 上传成功会生成HTML、Markdown、BBCode三种形式的外链，可以用来当做图床、文件下载url。
 - 测试地址：[tgNetDisc](https://yo.yohann.buzz/netdisc)
-- 原作者地址：[https://github.com/csznet/tgState](https://github.com/csznet/tgState)
+- 原作者地址：[https://github.com/csznet/tgState](https://github.com/csznet/tgState) 在此基础上进行了部分修改。
 
 ## Docker一键部署（推荐🏆）
 - `TOKEN`是机器人token。
