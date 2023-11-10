@@ -11,8 +11,7 @@
 拉取个人镜像仓库镜像并启动容器：
 
 ```bash
-docker run -d -p 8088:8088 \
---network=host \
+docker run -d --network=host \
 --name netdisc \
 -e TOKEN=xxx \
 -e CHANNEL=xxx \
