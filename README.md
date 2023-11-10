@@ -1,3 +1,4 @@
+[中文](https://github.com/Yohann0617/tgNetDisc/blob/master/README.md) | [EN](https://github.com/Yohann0617/tgNetDisc/blob/master/README_EN.md)
 # tgNetDisc
 - 利用Telegram接口，无限容量，不限制文件格式，大文件会分片上传（速度挺慢），但不支持上传超大文件。
 - 上传成功会生成HTML、Markdown、BBCode三种形式的外链，可以用来当做图床、文件下载url。
