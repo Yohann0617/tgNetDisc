@@ -1,3 +1,4 @@
+[中文](https://github.com/Yohann0617/tgNetDisc/blob/master/README.md) | [EN](https://github.com/Yohann0617/tgNetDisc/blob/master/README_EN.md)
 # tgNetDisc
 - Using the Telegram interface, unlimited capacity, no limit on file formats, large files will be uploaded in parts (the speed is quite slow), but it does not support uploading super large files.
 - If the upload is successful, three forms of external links will be generated: HTML, Markdown, and BB Code, which can be used as image beds and file download URLs.
