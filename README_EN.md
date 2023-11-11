@@ -1,9 +1,11 @@
 [中文](https://github.com/Yohann0617/tgNetDisc/blob/master/README.md) | [EN](https://github.com/Yohann0617/tgNetDisc/blob/master/README_EN.md)
 # tgNetDisc
-- Using the Telegram interface, unlimited capacity, no limit on file formats, large files will be uploaded in parts (the speed is quite slow), but it does not support uploading super large files.
-- If the upload is successful, three forms of external links will be generated: HTML, Markdown, and BB Code, which can be used as image beds and file download URLs.
-- Test address:[tgNetDisc](https://yo.yohann.buzz/netdisc)
-- Original Author's Address:[https://github.com/csznet/tgState](https://github.com/csznet/tgState) On this basis, some modifications are made.
+- 🤖Use the Telegram interface (requires a foreign VPS), ♾️️ unlimited capacity, no 🚫limits on file formats, no 🚫limits on file content😏, takes up very little memory and disk space📁, lightweight and convenient.
+- Files are stored on Telegram☁️ side, with good security🔒 and sustainability.
+- Large files will be uploaded in parts (not fast), but uploading very large files is not supported.
+- Successful upload will generate external links in the form of HTML, Markdown, and BBCode🔗, which can be used as image beds and file download URLs.
+- Test address:☞[tgNetDisc](https://yo.yohann.buzz/netdisc)☜
+- Original Author's Address:[https://github.com/csznet/tgState](https://github.com/csznet/tgState), On this basis, some modifications are made.
 
 ## Docker One-click deployment (recommended 🏆)
 - `TOKEN`is a bot token.
