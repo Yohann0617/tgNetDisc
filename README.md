@@ -1,7 +1,9 @@
 [中文](https://github.com/Yohann0617/tgNetDisc/blob/master/README.md) | [EN](https://github.com/Yohann0617/tgNetDisc/blob/master/README_EN.md)
 # tgNetDisc
-- 利用Telegram接口，无限容量，不限制文件格式，大文件会分片上传（速度不快），但不支持上传超大文件。
-- 上传成功会生成HTML、Markdown、BBCode三种形式的外链，可以用来当做图床、文件下载url。
+- 🤖利用Telegram接口（需要一台国外VPS），♾️️无限容量，不🚫限制文件格式，不🚫限制文件内容😏，占用很少的内存和磁盘空间📁，轻巧方便。
+- 文件都存储在Telegram☁️端，拥有良好的安全性🔒和可持续性。
+- 大文件会分片上传（速度不快），但不支持上传超大文件。
+- 上传成功会生成HTML、Markdown、BBCode三种形式的外链🔗，可以用来当做图床、文件下载url。
 - 测试地址：[tgNetDisc](https://yo.yohann.buzz/netdisc)
 - 原作者地址：[https://github.com/csznet/tgState](https://github.com/csznet/tgState) 在此基础上进行了部分修改。
 
