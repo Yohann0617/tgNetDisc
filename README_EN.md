@@ -21,6 +21,8 @@ docker run -d --network=host \
 -e TOKEN=xxx \
 -e CHANNEL=xxx \
 -e MODE=pan \
+-e PASS=yohann \
+-e DOMAIN=https://hh.abc.com \
 yohannfan/yohann-netdisc:1.0
 ```
 
