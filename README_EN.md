@@ -9,7 +9,7 @@
 
 ## Docker One-click deployment (recommended 🏆)
 - `TOKEN`is a bot token.
-- `CHANNEL` can be the channel address or chatId (can be obtained through the robot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the robot into the channel, and set it as an administrator. The channel address format is such as: `@yohannChannl`. Reference the file and reply to `get` to get the file id (base64 encoding). The file can be downloaded directly through `domain name`+`/d/`+`file id`. If it is a picture, it can be viewed directly.
+- `CHANNEL` can be the channel address or chatId (can be obtained through the robot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the robot into the channel, and set it as an administrator. The channel address format is such as: `@yohannChannl`. Reference the file (for fragmented files above 10MB, reference the `fileAll.txt` file) and reply `get` to obtain the file id (base64 encoding). You can directly download the file through `domain name`+`/d/`+`file id` Files, if they are pictures, can be viewed directly.
 
 Pull the personal registry image and start the container:
 
