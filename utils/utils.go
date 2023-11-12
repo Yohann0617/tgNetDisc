@@ -91,26 +91,26 @@ func BotDo() {
 		if update.Message != nil {
 			// 处理get
 			if update.Message.Text == "get" {
-				// video
-				if update.Message.ReplyToMessage.Video != nil {
-					if update.Message.ReplyToMessage.Video.FileID != "" {
-						msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Video.FileID)
-						_, err := bot.Send(msg)
-						if err != nil {
-							log.Println(err)
-							return
+				if update.Message.ReplyToMessage != nil {
+					// video
+					if update.Message.ReplyToMessage.Video != nil {
+						if update.Message.ReplyToMessage.Video.FileID != "" {
+							msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Video.FileID)
+							_, err := bot.Send(msg)
+							if err != nil {
+								log.Println(err)
+							}
 						}
 					}
-				}
-				// 其他文件
-				if update.Message.ReplyToMessage.Document != nil {
-					if update.Message.ReplyToMessage.Document.FileID != "" {
-						msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Document.FileID)
-						msg.ReplyToMessageID = update.Message.MessageID
-						_, err := bot.Send(msg)
-						if err != nil {
-							log.Println(err)
-							return
+					// 其他文件
+					if update.Message.ReplyToMessage.Document != nil {
+						if update.Message.ReplyToMessage.Document.FileID != "" {
+							msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Document.FileID)
+							msg.ReplyToMessageID = update.Message.MessageID
+							_, err := bot.Send(msg)
+							if err != nil {
+								log.Println(err)
+							}
 						}
 					}
 				}
@@ -120,25 +120,25 @@ func BotDo() {
 		if update.ChannelPost != nil {
 			// 处理get
 			if update.ChannelPost.Text == "get" {
-				// video
-				if update.ChannelPost.ReplyToMessage.Video != nil {
-					if update.ChannelPost.ReplyToMessage.Video.FileID != "" {
-						msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Video.FileID)
-						_, err := bot.Send(msg)
-						if err != nil {
-							log.Println(err)
-							return
+				if update.ChannelPost.ReplyToMessage != nil {
+					// video
+					if update.ChannelPost.ReplyToMessage.Video != nil {
+						if update.ChannelPost.ReplyToMessage.Video.FileID != "" {
+							msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Video.FileID)
+							_, err := bot.Send(msg)
+							if err != nil {
+								log.Println(err)
+							}
 						}
 					}
-				}
-				// 其他文件
-				if update.ChannelPost.ReplyToMessage.Document != nil {
-					if update.ChannelPost.ReplyToMessage.Document.FileID != "" {
-						msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Document.FileID)
-						_, err := bot.Send(msg)
-						if err != nil {
-							log.Println(err)
-							return
+					// 其他文件
+					if update.ChannelPost.ReplyToMessage.Document != nil {
+						if update.ChannelPost.ReplyToMessage.Document.FileID != "" {
+							msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Document.FileID)
+							_, err := bot.Send(msg)
+							if err != nil {
+								log.Println(err)
+							}
 						}
 					}
 				}
