@@ -58,5 +58,6 @@ yohannfan/yohann-netdisc:1.0
 ```
 
 ## 页面预览
-![Alt Text](https://yo.yohann.buzz/d/BQACAgUAAxkDAANDZUxa0bRG9KCFuKdO8GfMtXf4AeEAAuEKAAJg12FWkS1Xmkrd37QzBA)
+![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/3149fbab-9933-4c1e-9b86-a97fe28fe678)
+![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/227b83af-7c83-4b22-ba89-9f21606e44e9)
 
