@@ -68,6 +68,7 @@ func GetDownloadUrl(fileID string) string {
 	// log.Printf("File Download URL: %s", fileURL)
 	return fileURL
 }
+
 func BotDo() {
 
 	bot, err := tgbotapi.NewBotAPI(conf.BotToken)
@@ -83,14 +84,64 @@ func BotDo() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates := bot.GetUpdatesChan(u)
+	updatesChan := bot.GetUpdatesChan(u)
 
-	for update := range updates {
-		if update.Message != nil { // If we got a message
-			if update.Message.Text == "get" && update.Message.ReplyToMessage.Document.FileID != "" {
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Document.FileID)
-				msg.ReplyToMessageID = update.Message.MessageID
-				bot.Send(msg)
+	for update := range updatesChan {
+		// 私聊机器人
+		if update.Message != nil {
+			// 处理get
+			if update.Message.Text == "get" {
+				// video
+				if update.Message.ReplyToMessage.Video != nil {
+					if update.Message.ReplyToMessage.Video.FileID != "" {
+						msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Video.FileID)
+						_, err := bot.Send(msg)
+						if err != nil {
+							log.Println(err)
+							return
+						}
+					}
+				}
+				// 其他文件
+				if update.Message.ReplyToMessage.Document != nil {
+					if update.Message.ReplyToMessage.Document.FileID != "" {
+						msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Document.FileID)
+						msg.ReplyToMessageID = update.Message.MessageID
+						_, err := bot.Send(msg)
+						if err != nil {
+							log.Println(err)
+							return
+						}
+					}
+				}
+			}
+		}
+		// 频道
+		if update.ChannelPost != nil {
+			// 处理get
+			if update.ChannelPost.Text == "get" {
+				// video
+				if update.ChannelPost.ReplyToMessage.Video != nil {
+					if update.ChannelPost.ReplyToMessage.Video.FileID != "" {
+						msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Video.FileID)
+						_, err := bot.Send(msg)
+						if err != nil {
+							log.Println(err)
+							return
+						}
+					}
+				}
+				// 其他文件
+				if update.ChannelPost.ReplyToMessage.Document != nil {
+					if update.ChannelPost.ReplyToMessage.Document.FileID != "" {
+						msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Document.FileID)
+						_, err := bot.Send(msg)
+						if err != nil {
+							log.Println(err)
+							return
+						}
+					}
+				}
 			}
 		}
 	}

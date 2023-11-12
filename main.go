@@ -68,4 +68,7 @@ func init() {
 	if conf.Mode == "" {
 		conf.Mode = os.Getenv("MODE")
 	}
+	if conf.Pass == "" {
+		conf.Pass = os.Getenv("PASS")
+	}
 }
