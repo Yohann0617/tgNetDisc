@@ -87,60 +87,31 @@ func BotDo() {
 	updatesChan := bot.GetUpdatesChan(u)
 
 	for update := range updatesChan {
-		// 私聊机器人
+		var msg *tgbotapi.Message
 		if update.Message != nil {
-			// 处理get
-			if update.Message.Text == "get" {
-				if update.Message.ReplyToMessage != nil {
-					// video
-					if update.Message.ReplyToMessage.Video != nil {
-						if update.Message.ReplyToMessage.Video.FileID != "" {
-							msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Video.FileID)
-							_, err := bot.Send(msg)
-							if err != nil {
-								log.Println(err)
-							}
-						}
-					}
-					// 其他文件
-					if update.Message.ReplyToMessage.Document != nil {
-						if update.Message.ReplyToMessage.Document.FileID != "" {
-							msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.ReplyToMessage.Document.FileID)
-							msg.ReplyToMessageID = update.Message.MessageID
-							_, err := bot.Send(msg)
-							if err != nil {
-								log.Println(err)
-							}
-						}
-					}
-				}
-			}
+			msg = update.Message
 		}
-		// 频道
 		if update.ChannelPost != nil {
-			// 处理get
-			if update.ChannelPost.Text == "get" {
-				if update.ChannelPost.ReplyToMessage != nil {
-					// video
-					if update.ChannelPost.ReplyToMessage.Video != nil {
-						if update.ChannelPost.ReplyToMessage.Video.FileID != "" {
-							msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Video.FileID)
-							_, err := bot.Send(msg)
-							if err != nil {
-								log.Println(err)
-							}
-						}
-					}
-					// 其他文件
-					if update.ChannelPost.ReplyToMessage.Document != nil {
-						if update.ChannelPost.ReplyToMessage.Document.FileID != "" {
-							msg := tgbotapi.NewMessage(update.ChannelPost.Chat.ID, update.ChannelPost.ReplyToMessage.Document.FileID)
-							_, err := bot.Send(msg)
-							if err != nil {
-								log.Println(err)
-							}
-						}
-					}
+			msg = update.ChannelPost
+		}
+		if msg != nil && msg.Text == "get" && msg.ReplyToMessage != nil {
+			var fileID, domain string
+			domain = conf.Domain
+			if domain != "" {
+				fileID = domain + "/d/"
+			}
+			if msg.ReplyToMessage.Document != nil && msg.ReplyToMessage.Document.FileID != "" {
+				fileID += msg.ReplyToMessage.Document.FileID
+			}
+			if msg.ReplyToMessage.Video != nil && msg.ReplyToMessage.Video.FileID != "" {
+				fileID += msg.ReplyToMessage.Video.FileID
+			}
+			if fileID != "" {
+				newMsg := tgbotapi.NewMessage(msg.Chat.ID, fileID)
+				newMsg.ReplyToMessageID = msg.MessageID
+				_, err := bot.Send(newMsg)
+				if err != nil {
+					log.Println(err)
 				}
 			}
 		}

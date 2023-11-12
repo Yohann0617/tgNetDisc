@@ -8,8 +8,10 @@
 >Original Author's Address:[https://github.com/csznet/tgState](https://github.com/csznet/tgState), On this basis, some modifications are made.
 
 ## Docker One-click deployment (recommended 🏆)
-- `TOKEN`is a bot token.
-- `CHANNEL` can be the channel address or chatId (can be obtained through the robot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the robot into the channel, and set it as an administrator. The channel address format is such as: `@yohannChannl`. Reference the file (for fragmented files above 10MB, reference the `fileAll.txt` file) and reply `get` to obtain the file id (base64 encoding). You can directly download the file through `domain name`+`/d/`+`file id` Files, if they are pictures, can be viewed directly.
+- `TOKEN` is the robot token.
+- `DOMAIN` is the domain name and does not need to be configured.
+- `PASS` is the password and does not need to be configured.
+- `CHANNEL` can be the channel address or chatId (can be obtained through the robot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the robot into the channel, and set it as an administrator. The channel address format is such as: `@yohannChannl`. Reference the file (for fragmented files above 10MB, reference the `fileAll.txt` file) and reply to `get`. If the `DOMAIN` domain name parameter is configured, the complete URL will be returned. Otherwise, the file id (base64 encoding) will be returned. Pass `Domain name`+`/d/`+`File id` can directly download the file, and if it is a picture, it can be viewed directly.
 
 Pull the personal registry image and start the container:
 

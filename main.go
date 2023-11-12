@@ -54,6 +54,7 @@ func init() {
 	flag.StringVar(&conf.ChannelName, "channel", "", "Channel Name")
 	flag.StringVar(&conf.Pass, "pass", "", "Visit Password")
 	flag.StringVar(&conf.Mode, "mode", "", "Run mode")
+	flag.StringVar(&conf.Domain, "domain", "", "domain name")
 	indexPtr := flag.Bool("index", false, "Show Index")
 	flag.Parse()
 	if *indexPtr {
@@ -70,5 +71,8 @@ func init() {
 	}
 	if conf.Pass == "" {
 		conf.Pass = os.Getenv("PASS")
+	}
+	if conf.Domain == "" {
+		conf.Domain = os.Getenv("DOMAIN")
 	}
 }
