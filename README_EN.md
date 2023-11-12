@@ -9,7 +9,7 @@
 
 ## Docker One-click deployment (recommended 🏆)
 - `TOKEN`is a bot token.
-- `CHANNEL`It can be the channel address or the chatId (which can be obtained through the bot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the bot into the channel, set it as an administrator, and the channel address format is as follows: `@yohannChannl`. If it is chatId, you can get the file id (base64 encoding) through the private chat bot, reference file (video files around 3MB~10MB are not supported, the pro-test will directly stop the service, fragmented files of more than 10MB, reference `fileAll.txt` is supported) and reply `get` to get the file id (base64 encoding), through `domain name`+`/d`+`file id` can directly download the file, if it is a picture, you can view it directly.
+- `CHANNEL` can be the channel address or chatId (can be obtained through the robot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the robot into the channel, and set it as an administrator. The channel address format is such as: `@yohannChannl`. Reference the file and reply to `get` to get the file id (base64 encoding). The file can be downloaded directly through `domain name`+`/d/`+`file id`. If it is a picture, it can be viewed directly.
 
 Pull the personal registry image and start the container:
 
