@@ -5,10 +5,10 @@ on:
     secrets:
       DOCKER_USERNAME:
         description: '852221040@qq.com'
-        required: true
+        required: false
       DOCKER_PASSWORD:
         description: 'Fyh23456.'
-        required: true
+        required: false
   push:
     branches: [ "master" ]
   pull_request:
