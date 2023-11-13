@@ -3,9 +3,6 @@ name: Docker Image CI
 on:
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
-        description: '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'
-        required: true
       DOCKER_USERNAME:
         description: '852221040@qq.com'
         required: true
