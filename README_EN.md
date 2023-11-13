@@ -60,6 +60,6 @@ For cloud storage mode, use the -mode pan parameter, like this:
 
 
 ## Page preview
-![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/3149fbab-9933-4c1e-9b86-a97fe28fe678)
+![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/729b766c-0cb0-49d3-bca0-130a98867368)
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/227b83af-7c83-4b22-ba89-9f21606e44e9)
 
