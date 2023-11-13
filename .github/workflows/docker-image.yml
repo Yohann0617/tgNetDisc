@@ -1,15 +1,6 @@
 name: Docker Image CI
 
 on:
-  workflow_call:
-    secrets:
-      DOCKER_USERNAME:
-        description: 852221040@qq.com
-        required: true
-      DOCKER_PASSWORD:
-        description: Fyh23456.
-        required: true
-
   push:
     branches: [ "master" ]
   pull_request:
