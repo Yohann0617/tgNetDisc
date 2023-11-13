@@ -30,15 +30,6 @@ jobs:
     - name: Build Linux arm64
       run: |
         CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o tgstate main.go
-
-    - name: Zip Linux amd64
-      run: |
-        sudo apt-get install -y zip
-        zip tgstate_arm64.zip tgstate
-
-    - name: Delete tgstate arm64
-      run: |
-        rm tgstate
   
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
