@@ -9,11 +9,12 @@ on:
       DOCKER_PASSWORD:
         description: Fyh23456.
         required: true
+
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest
