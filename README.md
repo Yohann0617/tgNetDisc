@@ -23,7 +23,7 @@ docker run -d --network=host \
 -e MODE=pan \
 -e PASS=yohann \
 -e DOMAIN=https://hh.abc.com \
-yohannfan/yohann-netdisc:1.0
+yohannfan/yohann-netdisc:latest
 ```
 
 ## 二进制可执行文件启动
