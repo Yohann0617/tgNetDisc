@@ -2,15 +2,11 @@ package api
 
 import (
  "net/http"
- "os"package api
-
-import (
- "net/http"
  "os"
  "strings"
 
  "yohann/tgNetDisc/conf"
- "yohann/tgNetDisc/contro]"
+ "yohann/tgNetDisc/control"
 )
 
 func Vercel(w http.ResponseWriter, r *http.Request) {
