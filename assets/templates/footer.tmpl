@@ -146,14 +146,22 @@
     }),
         $(document).ready(function () {
             $("#uploadFile").change(function () {
-                var e = $(this).val().split("\\").pop();
-                e
-                    ? $("#uploadFileLabel")
-                        .text("已选择文件: " + e)
-                        .css("background-color", "#0056b3")
-                    : $("#uploadFileLabel")
-                        .text("选择文件")
-                        .css("background-color", "#007BFF");
+                var files = $(this)[0].files;
+                   if (files.length > 0) {
+                       if (files.length === 1) {
+                           $("#uploadFileLabel")
+                               .text("已选择文件: " + files[0].name)
+                               .css("background-color", "#0056b3");
+                       } else {
+                           $("#uploadFileLabel")
+                               .text("已选择多个文件")
+                               .css("background-color", "#0056b3");
+                       }
+                   } else {
+                       $("#uploadFileLabel")
+                           .text("选择文件")
+                           .css("background-color", "#007BFF");
+                   }
             }),
                 $("#uploadButton").click(function () {
                     var e = document.getElementById("uploadFile").files[0];
