@@ -1,7 +1,7 @@
 {{define "public/footer"}}
 <script>
   async function uploadFile(file) {
-    const limit = 4 * 1024 * 1024;
+    const limit = 10 * 1024 * 1024;
     if (file.size <= limit) {
       try {
         const url = await uploadImg(file, 1);
