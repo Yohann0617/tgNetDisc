@@ -1,171 +1,207 @@
 {{define "public/footer"}}
 <script>
-  async function uploadFile(file) {
-    const limit = 10 * 1024 * 1024;
-    if (file.size <= limit) {
-      try {
-        const url = await uploadImg(file, 1);
-        console.log(url);
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      const chunkSize = limit;
-      let start = 0;
-      let end = Math.min(chunkSize, file.size);
-      let temp = "tgstate-blob";
-      temp += '\n' + file.name;
-
-      async function uploadNextChunk() {
-        while (start < file.size) {
-          const chunk = file.slice(start, end);
-          try {
-            const url = await uploadImg(chunk, 0);
-            temp += '\n' + url.replace(/^\/d\//, '');
-            start = end;
-            end = Math.min(start + chunkSize, file.size);
-          } catch (error) {
-            console.error(error);
-            $("#response").prepend('<div class="response-item response-error">上传失败(' + error.message + ')</div>');
-            throw new Error("Upload failed");
-          }
-        }
-      }
-
-      try {
-        await uploadNextChunk();
-        console.log(temp);
-        const blob = new Blob([temp], {type: 'text/plain'});
-        const fileAll = new File([blob], 'fileAll.txt', {type: 'text/plain'});
-        await uploadImg(fileAll, 1);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
-  async function uploadImg(file, ms) {
-    let formData = new FormData();
-    formData.append("image", file);
-
-    let isImage = file.type.startsWith('image/');
-    $("#uploadButton").prop("disabled", true);
-    $("#uploadButton").text("上传中");
-    $("#loading").show();
-
-    let url = `${window.location.protocol}`+ '//'+
-    `${window.location.hostname}`+
-    `${window.location.port && window.location.port !== '80' ? ':' + window.location.port : ''}`;
-
-    try {
-      let response = await fetch(url + '/api', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('网络错误');
-      }
-
-      let result = await response.json();
-
-      if (result.code !== 1) {
-        throw new Error(result.message);
-      }
-
-      let link = url + result.message;
-      let message;
-      if (ms) {
-        if (isImage) {
-          message = '<div class="response-item response-success">上传成功，图片外链：<a target="_blank" href="' +
-            link +
-            '">' +
-            link +
-            '</a><div class="copy-links"><span class="copy-code" data-clipboard-text="&lt;img src=&quot;' +
-            link +
-            '&quot; alt=&quot;Your Alt Text&quot;&gt;">HTML</span><span class="copy-code" data-clipboard-text="![Alt Text](' +
-            link +
-            ')">Markdown</span><span class="copy-code" data-clipboard-text="[img]' +
-            link +
-            '[/img]">BBCode</span></div></div>';
+    function uploadFile(file) {
+        var limit = 10 * 1024 * 1024;
+        if (file.size <= limit) {
+            uploadImg(file, 1).then((url) => {
+                // 处理上传成功的情况
+                console.log(url);
+            }).catch((error) => {
+                // 处理上传失败的情况
+                console.error(error);
+            });
         } else {
-          message = '<div class="response-item response-success">上传成功，文件外链：<a target="_blank" href="' +
-            link +
-            '">' +
-            link +
-            "</a></div>";
+            // 文件大于20MB，需要分割成多个块
+            var chunkSize = limit; // 20MB
+            var start = 0;
+            var end = Math.min(chunkSize, file.size);
+            function uploadNextChunk() {
+                if (start < file.size) {
+                    var chunk = file.slice(start, end);
+                    return uploadImg(chunk, 0)
+                        .then((url) => {
+                            // 处理上传成功的情况
+                            temp = temp + '\n' + url.replace(/^\/d\//, ''); // 每次改变值都换行
+                            start = end;
+                            end = Math.min(start + chunkSize, file.size);
+                            return uploadNextChunk(); // 上传下一个块
+                        })
+                        .catch((error) => {
+                            // 处理上传失败的情况
+                            console.error(error);
+                            var t = $('<div class="response-item response-error">上传失败(' + e.message + ')</div>');
+                            $("#response").prepend(t);
+                            return Promise.reject("Upload failed"); // 终止上传
+                        });
+                } else {
+                    return Promise.resolve(); // 如果所有块都上传完成，返回一个已解决的 Promise
+                }
+
+            }
+            var temp = "tgstate-blob";
+            temp = temp + '\n' + file.name;
+            uploadNextChunk()
+                .then(() => {
+                    console.log(temp); // 所有块上传完成后打印
+                    // 将字符串转换为 Blob 对象
+                    var blob = new Blob([temp], { type: 'text/plain' });
+                    var fileAll = new File([blob], 'fileAll.txt', { type: 'text/plain' });
+                    return uploadImg(fileAll, 1);
+                })
+                .catch((error) => {
+                    // 处理上传失败的情况
+                    console.error(error);
+                });
         }
-      }
-
-      $("#response").prepend(message);
-      $("#uploadFile").val("");
-      $("#uploadFileLabel")
-        .text("选择文件")
-        .css("background-color", "#007BFF");
-
-      $(".copy-code").click(function () {
-        var code = $(this).data("clipboard-text");
-        var input = $("<input>");
-        $("body").append(input);
-        input.val(code).select();
-        document.execCommand("copy");
-        input.remove();
-        var copyButton = $(this);
-        var originalText = copyButton.text();
-        copyButton.text("复制成功");
-        setTimeout(function () {
-          copyButton.text(originalText);
-        }, 1000);
-      });
-
-      return result.message;
-
-    } catch (error) {
-      console.error(error);
-      $("#response").prepend(`<div class="response-item response-error">上传失败(${error.message})</div>`);
-      throw error;
-
-    } finally {
-      $("#uploadButton").prop("disabled", false);
-      $("#uploadButton").text("上传");
-      $("#loading").hide();
     }
-  }
+    function uploadImg(e, ms) {
+        return new Promise((resolve, reject) => {
+            var o = new FormData();
+            o.append("image", e);
+            var isImage = e.type.startsWith('image/');
+            $("#uploadButton").prop("disabled", !0);
+            $("#uploadButton").text("上传中");
+            $("#loading").show();
+            var a = window.location.protocol + "//" + window.location.hostname;
+            "80" !== window.location.port &&
+                0 < window.location.port.length &&
+                (a = a + ":" + window.location.port),
+                $.ajax({
+                    type: "POST",
+                    url: a + "/api",
+                    data: o,
+                    contentType: !1,
+                    processData: !1,
+                    success: function (e) {
+                        var link = a + e.message;
+                        var t;
+                        if (e.code == 1) {
+                            if (ms) {
+                                if (isImage) {
+                                    t = $(
+                                        '<div class="response-item response-success">上传成功，图片外链：<a target="_blank" href="' +
+                                        link +
+                                        '">' +
+                                        link +
+                                        '</a><div class="copy-links"><span class="copy-code" data-clipboard-text="&lt;img src=&quot;' +
+                                        link +
+                                        '&quot; alt=&quot;Your Alt Text&quot;&gt;">HTML</span><span class="copy-code" data-clipboard-text="![Alt Text](' +
+                                        link +
+                                        ')">Markdown</span><span class="copy-code" data-clipboard-text="[img]' +
+                                        link +
+                                        '[/img]">BBCode</span></div></div>'
+                                    );
+                                } else {
+                                    t = $(
+                                        '<div class="response-item response-success">上传成功，文件外链：<a target="_blank" href="' +
+                                        link +
+                                        '">' +
+                                        link +
+                                        "</a></div>"
+                                    );
+                                }
+                            }
+                            resolve(e.message);
+                        } else {
+                            var t = $('<div class="response-item response-error">上传失败(' + e.message + ')</div>');
+                            reject("上传失败(" + e.message + ")");
+                        }
+                        $("#response").prepend(t);
+                        $("#uploadFile").val("");
+                        $("#uploadFileLabel")
+                            .text("选择文件")
+                            .css("background-color", "#007BFF");
 
+                        $(".copy-code").click(function () {
+                            var code = $(this).data("clipboard-text");
+                            var input = $("<input>");
+                            $("body").append(input);
+                            input.val(code).select();
+                            document.execCommand("copy");
+                            input.remove();
+                            var copyButton = $(this);
+                            var originalText = copyButton.text();
+                            copyButton.text("复制成功");
+                            setTimeout(function () {
+                                copyButton.text(originalText);
+                            }, 1000);
+                        });
+                        return e.message;
+                    },
+                    error: function () {
+                        var errorResponse = $('<div class="response-item response-error">上传失败</div>');
+                        $("#response").prepend(errorResponse);
+                        reject("上传失败");
+                    },
+                    complete: function () {
+                        $("#uploadButton").prop("disabled", !1);
+                        $("#uploadButton").text("上传");
+                        $("#loading").hide();
+                    }
+                });
+        });
+    }
+    function readAndUploadFile(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            // e.target.result 包含读取的文件内容
+            var fileContent = e.target.result;
+            // 调用上传文件的函数
+            uploadFile(file, fileContent);
+        };
+        // 以文本形式读取文件内容
+        reader.readAsText(file);
+    }
     document.addEventListener("paste", function (e) {
         for (var o = e.clipboardData.items, t = 0; t < o.length; t++) {
             var a,
                 n = o[t];
             -1 !== n.type.indexOf("image") &&
-            ((a = n.getAsFile()),
-                $("#uploadFileLabel")
-                    .text("已选择剪贴板文件")
-                    .css("background-color", "#0056b3"),
-                uploadFile(a));
+                ((a = n.getAsFile()),
+                    $("#uploadFileLabel")
+                        .text("已选择剪贴板文件")
+                        .css("background-color", "#0056b3"),
+                    uploadFile(a));
         }
     }),
         $(document).ready(function () {
             $("#uploadFile").change(function () {
-                var e = $(this).val().split("\\").pop();
-                e
-                    ? $("#uploadFileLabel")
-                        .text("已选择文件: " + e)
-                        .css("background-color", "#0056b3")
-                    : $("#uploadFileLabel")
+                var files = $(this)[0].files;
+                if (files.length > 0) {
+                    if (files.length === 1) {
+                        $("#uploadFileLabel")
+                            .text("已选择文件: " + files[0].name)
+                            .css("background-color", "#0056b3");
+                    } else {
+                        $("#uploadFileLabel")
+                            .text("已选择多个文件")
+                            .css("background-color", "#0056b3");
+                    }
+                } else {
+                    $("#uploadFileLabel")
                         .text("选择文件")
                         .css("background-color", "#007BFF");
-            }),
-                $("#uploadButton").click(function () {
-                    var e = document.getElementById("uploadFile").files[0];
-                    e ? uploadFile(e) : alert("请选择一个文件");
-                });
+                }
+            });
+            $("#uploadButton").click(function () {
+                var input = document.getElementById("uploadFile");
+                if (input.files.length > 0) {
+                    for (var i = 0; i < input.files.length; i++) {
+                        readAndUploadFile(input.files[i]);
+                    }
+                } else {
+                    alert("请选择一个文件");
+                }
+            });
         });
 </script>
+
 <div style="text-align: center;">
   <div style="text-align: left; display: inline-block;">
     <b>1.支持剪贴板图片上传</b><br>
     <b>2.大文件会分片上传，速度不快</b><br>
     <b>3.文件上传成功会生成HTML、Markdown、BBCode三种形式的外链，可以用来当做图床、文件下载url</b><br>
+   <!-- <b>4.由于此项目部署在Vercel上，所以只能用来当做图床，也不支持TG的get获取链接。部署在VPS上则支持所有功能</b><br>  -->
     <b>4.原作者地址：<a href="https://github.com/csznet/tgState" target="_blank">csznet</a></b><br>
   </div>
 </div>
