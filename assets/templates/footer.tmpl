@@ -53,8 +53,8 @@
     $("#uploadButton").text("上传中");
     $("#loading").show();
 
-    let url = `${window.location.protocol}`+
-    `//${window.location.hostname}`+
+    let url = `${window.location.protocol}`+ '//'+
+    `${window.location.hostname}`+
     `${window.location.port && window.location.port !== '80' ? ':' + window.location.port : ''}`;
 
     try {
