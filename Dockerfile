@@ -17,7 +17,7 @@ RUN go build -o tgState main.go \
 
 FROM ubuntu:latest
 
-RUN apt-get install -y ca-certificates openssl \
+RUN apt-get install -y candidate ca-certificates \
     && apt-get clean
 
 COPY --from=build /app/tgState /app/tgState
