@@ -3,7 +3,7 @@ FROM ubuntu:latest AS build
 
 # 安装 ca-certificates 包，用于更新根证书
 RUN apt-get update \
-    && apt-get install -y ca-certificates golang \
+    && apt-get install -y golang \
     && apt-get clean
 
 COPY . /root/tgNetDisc/
@@ -16,6 +16,8 @@ RUN go build -o tgState main.go \
     && rm -rf /root/tgNetDisc
 
 FROM ubuntu:latest
+RUN apt-get install -y ca-certificates \
+    && apt-get clean
 COPY --from=build /app/tgState /app/tgState
 
 # 设置工作目录
