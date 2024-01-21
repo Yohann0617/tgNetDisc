@@ -10,10 +10,12 @@ COPY . /root/tgNetDisc/
 RUN dpkg -i /root/tgNetDisc/openssl.deb && apt-get install -f \
     && dpkg -i /root/tgNetDisc/ca-certificates.deb && apt-get install -f \
     && rm -f /root/tgNetDisc/openssl.deb && rm -f /root/tgNetDisc/ca-certificates.deb \
-    && cd /root/tgNetDisc && go build -o tgState main.go
+    && cd /root/tgNetDisc && go build -o tgState main.go \
+    && cp /root/tgNetDisc/tgState /app/tgState \
+    && rm -rf /root/tgNetDisc
 
 # 将编译好的二进制文件复制到容器中
-COPY tgState /app/tgState
+#COPY /root/tgNetDisc/tgState /app/tgState
 
 # 设置工作目录
 WORKDIR /app
