@@ -16,9 +16,11 @@ COPY . /root/tgNetDisc/
 #    && dpkg -i /root/tgNetDisc/repo/ca-certificates.deb && apt-get install -f \
 #    && rm -f /root/tgNetDisc/repo/openssl.deb && rm -f /root/tgNetDisc/repo/ca-certificates.deb
 
+WORKDIR /root/tgNetDisc
 
-RUN cd /root/tgNetDisc && go build -o tgState main.go \
-    && mv /root/tgNetDisc/tgState /app/tgState \
+RUN go build -o tgState main.go \
+    && mkdir -p /app/ \
+    && cp tgState /app/tgState \
     && rm -rf /root/tgNetDisc
 
 # 将编译好的二进制文件复制到容器中
