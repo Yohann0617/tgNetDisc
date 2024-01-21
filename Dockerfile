@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # 安装 ca-certificates 包，用于更新根证书
 RUN apt-get update \
-    && apt-get install -y ca-certificates go \
+    && apt-get install -y ca-certificates golang \
     && apt-get clean
 
 # 将本地的 .deb 文件复制到容器中
