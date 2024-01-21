@@ -16,7 +16,8 @@ RUN go build -o tgState main.go \
     && rm -rf /root/tgNetDisc
 
 FROM ubuntu:latest
-RUN apt-get install -y ca-certificates \
+RUN apt-get update \
+    && apt-get install -y ca-certificates \
     && apt-get clean
 COPY --from=build /app/tgState /app/tgState
 
