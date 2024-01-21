@@ -18,7 +18,7 @@ COPY . /root/tgNetDisc/
 
 
 RUN cd /root/tgNetDisc && go build -o tgState main.go \
-    && cp /root/tgNetDisc/tgState /app/tgState \
+    && mv /root/tgNetDisc/tgState /app/tgState \
     && rm -rf /root/tgNetDisc
 
 # 将编译好的二进制文件复制到容器中
