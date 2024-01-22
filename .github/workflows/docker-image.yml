@@ -56,7 +56,6 @@ jobs:
       uses: actions/upload-release-asset@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
         asset_path: ./tgState.zip
@@ -67,7 +66,6 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
       with:
         upload_url: ${{ needs.create_release.outputs.upload_url }}
         asset_path: ./tgState_arm64.zip
