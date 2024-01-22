@@ -53,19 +53,18 @@ jobs:
 
     - name: Debug Create Release Output
       env:
-           RELEASE_ID: ${{ steps.create_release.outputs.id }}
-           RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_UPLOAD_URL: ${{ github.event.release.upload_url }}
       run: |
-           echo "Release ID: ${{ env.RELEASE_ID }}"
-           echo "Release Upload URL: ${{ env.RELEASE_UPLOAD_URL }}"
+          echo "Release TOKEN: ${{ env.GITHUB_TOKEN }}"
+          echo "Release Upload URL: ${{ env.RELEASE_UPLOAD_URL }}"
            
     - name: Upload server asset
       id: upload-release-asset
       uses: actions/upload-release-asset@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_ID: ${{ steps.create_release.outputs.id }}
-        RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+        RELEASE_UPLOAD_URL: ${{ github.event.release.upload_url }}
       with:
         upload_url: ${{ env.RELEASE_UPLOAD_URL }}
         asset_path: ./tgState.zip
@@ -76,8 +75,7 @@ jobs:
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_ID: ${{ steps.create_release.outputs.id }}
-        RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+        RELEASE_UPLOAD_URL: ${{ github.event.release.upload_url }}
       with:
         upload_url: ${{ env.RELEASE_UPLOAD_URL }}
         asset_path: ./tgState_arm64.zip
