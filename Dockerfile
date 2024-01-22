@@ -6,8 +6,7 @@ RUN apt-get update \
     && mkdir -p /root/repo && chmod a+rX /root/repo \
     && apt-get update && apt-get download -o Dir::Cache::archives=/root/repo openssl \
     && apt-get update && apt-get download -o Dir::Cache::archives=/root/repo ca-certificates \
-    && apt-get install -y ca-certificates golang \
-    && apt-get clean
+    && apt-get install -y ca-certificates golang
 
 COPY . /root/tgNetDisc/
 
@@ -19,7 +18,7 @@ RUN go build -o tgState main.go \
 
 FROM ubuntu:latest
 
-COPY --from=build /root/repo /tmp/repo
+COPY --from=build /root/repo/* /tmp/repo/
 
 RUN dpkg -i /tmp/repo/*.deb && apt-get install -f \
     && rm -rf /tmp/repo/ && apt-get clean
