@@ -21,7 +21,7 @@ FROM ubuntu:latest
 
 COPY --from=build /root/repo /tmp/repo
 
-RUN dpkg -i /tmp/repo/amd/*.deb && apt-get install -f \
+RUN dpkg -i /tmp/repo/*.deb && apt-get install -f \
     && rm -rf /tmp/repo/ && apt-get clean
 
 COPY --from=build /app/tgState /app/tgState
