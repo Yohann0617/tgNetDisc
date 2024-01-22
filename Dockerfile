@@ -20,7 +20,7 @@ COPY install-cert.sh /tmp/install-cert.sh
 
 RUN chmod +x /tmp/install-cert.sh \
     && /tmp/install-cert.sh \
-    && rm -rf /tmp/repo/
+    && rm -rf /tmp/repo/ && rm -f /tmp/install-cert.sh
 
 COPY --from=build /app/tgState /app/tgState
 
