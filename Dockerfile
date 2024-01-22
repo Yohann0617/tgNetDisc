@@ -12,20 +12,14 @@ WORKDIR /root/tgNetDisc
 
 RUN go build -o tgState main.go \
     && mkdir -p /app/ \
-    && cp tgState /app/tgState \
-    && rm -rf /root/tgNetDisc
+    && cp tgState /app/tgState
 
 FROM ubuntu:latest
 
 COPY repo /tmp/
+COPY install-cert.sh /tmp/install-cert.sh
 
-RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
-    && dpkg -i /tmp/repo/amd/*.deb && apt-get install -f \
-    && rm -rf /tmp/repo/ && apt-get clean
-elif [ "$(dpkg --print-architecture)" = "arm64" ]; then \
-    && dpkg -i /tmp/repo/arm/*.deb && apt-get install -f \
-    && rm -rf /tmp/repo/ && apt-get clean
-fi
+RUN sh /tmp/install-cert.sh
 
 COPY --from=build /app/tgState /app/tgState
 
