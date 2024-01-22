@@ -1,72 +1,20 @@
 name: Docker Image CI
 
 on:
-  release:
-    types: [ "created" ]
-
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  
 jobs:
-  build_and_upload_assets:
+  build:
     permissions: write-all
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-          go-version: 1.17.2
-          
-    - name: Update go.mod to use Go 1.17
-      run: |
-          sed -i 's/go 1.20/go 1.17/' go.mod
-          
-    - name: Download dependencies
-      run: go mod tidy
-
-    - name: Build Linux arm64
-      run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o tgState main.go
-
-    - name: Zip Linux amd64
-      run: |
-          sudo apt-get install -y zip
-          zip tgState_arm64.zip tgState
-
-    - name: Delete tgState arm64
-      run: |
-          rm tgState
-
-    - name: Build Linux amd64
-      run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o tgState main.go
-
-    - name: Zip Linux amd64
-      run: |
-          sudo apt-get install -y zip
-          zip tgState.zip tgState
-           
-    - name: Upload server asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./tgState.zip
-        asset_name: tgState.zip
-        asset_content_type: application/zip
-
-    - name: Upload server asset
-      uses: actions/upload-release-asset@latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./tgState_arm64.zip
-        asset_name: tgState_arm64.zip
-        asset_content_type: application/zip
-      
+  
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
