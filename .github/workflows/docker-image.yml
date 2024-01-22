@@ -12,7 +12,7 @@ jobs:
   build:
     permissions: write-all
     runs-on: ubuntu-latest
-
+        
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -51,12 +51,20 @@ jobs:
           sudo apt-get install -y zip
           zip tgState.zip tgState
 
+    - name: Debug Create Release Output
+      run: |
+           echo "Release ID: ${{ env.RELEASE_ID }}"
+           echo "Release Upload URL: ${{ env.RELEASE_UPLOAD_URL }}"
+      env:
+           RELEASE_ID: ${{ steps.create_release.outputs.id }}
+           RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
+           
     - name: Upload server asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ env.RELEASE_UPLOAD_URL }}
         asset_path: ./tgState.zip
         asset_name: tgState.zip
         asset_content_type: application/zip
@@ -66,7 +74,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ env.RELEASE_UPLOAD_URL }}
         asset_path: ./tgState_arm64.zip
         asset_name: tgState_arm64.zip
         asset_content_type: application/zip
