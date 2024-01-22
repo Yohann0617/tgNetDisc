@@ -17,9 +17,17 @@ RUN go build -o tgState main.go \
 
 FROM ubuntu:latest
 
-RUN apt-get update \
-    && apt-get install -y ca-certificates \
-    && apt-get clean
+COPY repo /tmp/
+
+RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
+    && dpkg -i /tmp/repo/amd/*.deb && apt-get install -f \
+    && rm -rf /tmp/repo/ && apt-get clean
+fi
+
+RUN if [ "$(dpkg --print-architecture)" = "arm64" ]; then \
+    && dpkg -i /tmp/repo/arm/*.deb && apt-get install -f \
+    && rm -rf /tmp/repo/ && apt-get clean
+fi
 
 COPY --from=build /app/tgState /app/tgState
 
