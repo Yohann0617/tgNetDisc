@@ -3,6 +3,9 @@ FROM ubuntu:latest AS build
 
 # 安装 ca-certificates 包，用于更新根证书
 RUN apt-get update \
+    && mkdir -p /root/repo && chmod a+rX /root/repo \
+    && apt-get update && apt-get download -o Dir::Cache::archives=/root/repo openssl \
+    && apt-get update && apt-get download -o Dir::Cache::archives=/root/repo ca-certificates \
     && apt-get install -y ca-certificates golang \
     && apt-get clean
 
@@ -16,11 +19,10 @@ RUN go build -o tgState main.go \
 
 FROM ubuntu:latest
 
-COPY repo /tmp/repo
-COPY install-cert.sh /tmp/install-cert.sh
+COPY --from=build /root/repo /tmp/repo
 
-RUN chmod +x /tmp/install-cert.sh
-RUN /tmp/install-cert.sh
+RUN dpkg -i /tmp/repo/amd/*.deb && apt-get install -f \
+    && rm -rf /tmp/repo/ && apt-get clean
 
 COPY --from=build /app/tgState /app/tgState
 
