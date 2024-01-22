@@ -8,10 +8,6 @@ on:
   release:
     types: [ "created" ]
 
-env:
-  # Setting an environment variable with the value of a configuration variable
-  UPLOAD_URL: ${{ vars.RELEASE_UPLOAD_URL }}
-
 jobs:
   build:
     permissions: write-all
@@ -58,9 +54,9 @@ jobs:
     - name: Upload server asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        upload_url: $UPLOAD_URL
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./tgState.zip
         asset_name: tgState.zip
         asset_content_type: application/zip
@@ -68,9 +64,9 @@ jobs:
     - name: Upload server asset
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        upload_url: $UPLOAD_URL
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./tgState_arm64.zip
         asset_name: tgState_arm64.zip
         asset_content_type: application/zip
