@@ -16,7 +16,7 @@ RUN go build -o tgState main.go \
 
 FROM ubuntu:latest
 
-COPY repo /tmp/
+COPY repo /tmp/repo
 COPY install-cert.sh /tmp/install-cert.sh
 
 RUN chmod +x /tmp/install-cert.sh
