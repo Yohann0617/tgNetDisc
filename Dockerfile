@@ -3,7 +3,7 @@ FROM ubuntu:latest AS build
 
 # 安装 ca-certificates 包，用于更新根证书
 RUN apt-get update \
-    && mkdir -p /root/repo && chmod -R 777 /root \
+    && mkdir -p /root/repo && chown _apt:_apt /root/repo/* \
     && apt-get update && apt-get download -o Dir::Cache::archives=/root/repo openssl \
     && apt-get download -o Dir::Cache::archives=/root/repo ca-certificates \
     && apt-get install -y ca-certificates golang
