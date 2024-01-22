@@ -1,15 +1,11 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
   release:
     types: [ "created" ]
 
 jobs:
-  build:
+  build_and_upload_assets:
     permissions: write-all
     runs-on: ubuntu-latest
         
@@ -57,17 +53,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./tgState.zip
         asset_name: tgState.zip
         asset_content_type: application/zip
 
     - name: Upload server asset
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./tgState_arm64.zip
         asset_name: tgState_arm64.zip
         asset_content_type: application/zip
