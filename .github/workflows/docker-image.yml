@@ -50,17 +50,6 @@ jobs:
       run: |
           sudo apt-get install -y zip
           zip tgState.zip tgState
-
-    - name: Create a Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ env.RELEASE_VERSION }}
-        release_name: Pre Release - ${{ env.RELEASE_VERSION }}
-        draft: false
-        prerelease: true
            
     - name: Upload server asset
       id: upload-release-asset
@@ -69,7 +58,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
       with:
-        upload_url: ${{ env.RELEASE_UPLOAD_URL }}
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
         asset_path: ./tgState.zip
         asset_name: tgState.zip
         asset_content_type: application/zip
@@ -80,7 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_UPLOAD_URL: ${{ steps.create_release.outputs.upload_url }}
       with:
-        upload_url: ${{ env.RELEASE_UPLOAD_URL }}
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
         asset_path: ./tgState_arm64.zip
         asset_name: tgState_arm64.zip
         asset_content_type: application/zip
