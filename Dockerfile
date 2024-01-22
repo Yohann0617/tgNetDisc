@@ -19,7 +19,8 @@ FROM ubuntu:latest
 COPY repo /tmp/
 COPY install-cert.sh /tmp/install-cert.sh
 
-RUN chmod +x /tmp/install-cert.sh && /tmp/install-cert.sh
+RUN chmod +x /tmp/install-cert.sh
+RUN /tmp/install-cert.sh
 
 COPY --from=build /app/tgState /app/tgState
 
