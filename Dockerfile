@@ -1,28 +1,25 @@
-# 使用官方的 Ubuntu 基础镜像
-FROM ubuntu:latest AS build
+# golang 基础镜像用于编译源码
+FROM golang:latest AS build
 
-# 安装 ca-certificates 包，用于更新根证书
-RUN apt-get update \
-    && apt-get install -y ca-certificates golang
-
+# 拷贝源码进行编译
 COPY . /root/tgNetDisc/
-
 WORKDIR /root/tgNetDisc
+RUN go build -o tgState main.go
 
-RUN go build -o tgState main.go \
-    && mkdir -p /app/ \
-    && cp tgState /app/tgState
-
+# 使用官方的 Ubuntu 基础镜像
 FROM ubuntu:latest
 
+# 拷贝 ca-certificates 包及安装脚本
 COPY repo /tmp/repo
 COPY install-cert.sh /tmp/install-cert.sh
 
+# 安装 ca-certificates 包
 RUN chmod +x /tmp/install-cert.sh \
     && /tmp/install-cert.sh \
     && rm -rf /tmp/repo/ && rm -f /tmp/install-cert.sh
 
-COPY --from=build /app/tgState /app/tgState
+# 从基础镜像拷贝编译好的二进制文件
+COPY --from=build /root/tgNetDisc/tgState /app/tgState
 
 # 设置工作目录
 WORKDIR /app
