@@ -11,12 +11,12 @@ FROM ubuntu:latest
 
 # 拷贝 ca-certificates 包及安装脚本
 COPY repo /tmp/repo
-COPY install-cert.sh /tmp/install-cert.sh
 
 # 安装 ca-certificates 包
-RUN chmod +x /tmp/install-cert.sh \
-    && /tmp/install-cert.sh \
-    && rm -rf /tmp/repo/ && rm -f /tmp/install-cert.sh
+RUN chmod +x /tmp/repo/install-cert.sh \
+    && /tmp/repo/install-cert.sh \
+    && rm -rf /tmp/repo/ \
+    && apt-get clean
 
 # 从基础镜像拷贝编译好的二进制文件
 COPY --from=build /root/tgNetDisc/tgState /app/tgState
