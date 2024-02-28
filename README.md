@@ -11,7 +11,7 @@
 - `TOKEN`是机器人token。
 - `DOMAIN`是域名，可以不用配置
 - `PASS`是密码，可以不用配置
-- `CHANNEL`可以是频道地址也可以是chatId（可以通过 [@getidsbot](https://t.me/getidsbot) 这个机器人获取）。如果是频道，需要将频道公开，并将机器人拉入频道，设置为管理员，频道地址格式如：`@yohannChannl`。引用文件（10MB以上的分片文件，引用`fileAll.txt`文件）并回复`get`，如果配置了`DOMAIN`域名参数，会返回完整url，反之则会返回文件id（base64编码），通过`域名`+`/d/`+`文件id`可以直接下载该文件，如果是图片则可以直接查看。
+- `CHANNEL`可以是频道地址也可以是chatId（可以通过 [@getidsbot](https://t.me/getidsbot) 这个机器人获取）。如果是频道，需要将频道公开，并将机器人拉入频道，设置为管理员，频道地址格式如：`@yohannChannl`。引用文件（分片文件引用`fileAll.txt`文件）并回复`get`，如果配置了`DOMAIN`域名参数，会返回完整url，反之则会返回文件id（base64编码），通过`域名`+`/d/`+`文件id`可以直接下载该文件，如果是图片则可以直接查看。
 
 拉取个人镜像仓库镜像并启动容器：
 
@@ -27,7 +27,7 @@ yohannfan/yohann-netdisc:latest
 ```
 
 ## 二进制可执行文件启动
-参考原作者
+参考原作者，本人暂未测试过。
 ```
  ./tgstate -token xxxx -channel @xxxx
 ```
@@ -61,3 +61,6 @@ yohannfan/yohann-netdisc:latest
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/844a61aa-cfd2-40b3-b63c-bb9de0fb8438)
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/227b83af-7c83-4b22-ba89-9f21606e44e9)
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)
