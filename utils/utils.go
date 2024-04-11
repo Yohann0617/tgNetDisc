@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"io"
 	"log"
-	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -24,6 +23,8 @@ func UpDocument(fileData tgbotapi.FileReader) string {
 		log.Println(err)
 		return ""
 	}
+	bot.Debug = true
+
 	// Upload the file to Telegram
 	params := tgbotapi.Params{
 		"chat_id": conf.ChannelName, // Replace with the chat ID where you want to send the file
@@ -34,6 +35,7 @@ func UpDocument(fileData tgbotapi.FileReader) string {
 			Data: fileData,
 		},
 	}
+
 	response, err := bot.UploadFiles("sendDocument", params, files)
 	if err != nil {
 		log.Panic(err)
@@ -101,12 +103,9 @@ func BotDo() {
 			if fileID != "" {
 				newMsg := tgbotapi.NewMessage(msg.Chat.ID, strings.TrimSuffix(conf.Domain, "/")+"/d/"+fileID)
 				newMsg.ReplyToMessageID = msg.MessageID
-				if !strings.HasPrefix(conf.ChannelName, "@") {
-					if man, err := strconv.Atoi(conf.ChannelName); err == nil && newMsg.ReplyToMessageID == man {
-						bot.Send(newMsg)
-					}
-				} else {
-					bot.Send(newMsg)
+				_, err := bot.Send(newMsg)
+				if err != nil {
+					log.Println(err)
 				}
 			}
 		}
