@@ -1,18 +1,25 @@
+# golang 基础镜像用于编译源码
+FROM golang:latest AS build
+
+# 拷贝源码进行编译
+COPY . /root/tgNetDisc/
+WORKDIR /root/tgNetDisc
+RUN go build -o tgState main.go
+
 # 使用官方的 Ubuntu 基础镜像
 FROM ubuntu:latest
 
-# 将本地的 .deb 文件复制到容器中
-COPY repo/openssl.deb /tmp/openssl.deb
-COPY repo/ca-certificates.deb /tmp/ca-certificates.deb
+# 拷贝 ca-certificates 包及安装脚本
+COPY repo /tmp/repo
 
-# 安装容器内的 .deb 文件
-RUN dpkg -i /tmp/openssl.deb && apt-get install -f
-RUN dpkg -i /tmp/ca-certificates.deb && apt-get install -f
+# 安装 ca-certificates 包
+RUN chmod +x /tmp/repo/install-cert.sh \
+    && /tmp/repo/install-cert.sh \
+    && rm -rf /tmp/repo/ \
+    && apt-get clean
 
-RUN rm -f /tmp/openssl.deb && rm -f /tmp/ca-certificates.deb
-
-# 将编译好的二进制文件复制到容器中
-COPY tgstate /app/tgState
+# 从基础镜像拷贝编译好的二进制文件
+COPY --from=build /root/tgNetDisc/tgState /app/tgState
 
 # 设置工作目录
 WORKDIR /app
