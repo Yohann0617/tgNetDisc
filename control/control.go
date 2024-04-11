@@ -7,8 +7,9 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	"yohann/tgNetDisc/assets"
 	"yohann/tgNetDisc/conf"
@@ -19,14 +20,6 @@ import (
 func UploadImageAPI(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if r.Method == http.MethodPost {
-		// 解析上传的文件
-		err := r.ParseMultipartForm(5 * 1024 * 1024) // 限制上传文件大小为 5MB
-		if err != nil {
-			errJsonMsg("Unable to parse form", w)
-			// http.Error(w, "Unable to parse form", http.StatusBadRequest)
-			return
-		}
-
 		// 获取上传的文件
 		file, header, err := r.FormFile("image")
 		if err != nil {
@@ -35,13 +28,10 @@ func UploadImageAPI(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer file.Close()
-		if conf.Mode != "pan" {
+		if conf.Mode != "pan" && r.ContentLength > 20*1024*1024 {
 			// 检查文件大小
-			fileSize := r.ContentLength
-			if fileSize > 20*1024*1024 {
-				errJsonMsg("File size exceeds 20MB limit", w)
-				return
-			}
+			errJsonMsg("File size exceeds 20MB limit", w)
+			return
 		}
 		// 检查文件类型
 		allowedExts := []string{".jpg", ".jpeg", ".png"}
@@ -53,22 +43,22 @@ func UploadImageAPI(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
-		if conf.Mode != "pan" {
-			if !valid {
-				errJsonMsg("Invalid file type. Only .jpg, .jpeg, and .png are allowed.", w)
-				// http.Error(w, "Invalid file type. Only .jpg, .jpeg, and .png are allowed.", http.StatusBadRequest)
-				return
-			}
+		if conf.Mode != "pan" && !valid {
+			errJsonMsg("Invalid file type. Only .jpg, .jpeg, and .png are allowed.", w)
+			// http.Error(w, "Invalid file type. Only .jpg, .jpeg, and .png are allowed.", http.StatusBadRequest)
+			return
 		}
 		res := conf.UploadResponse{
 			Code:    0,
 			Message: "error",
 		}
-		var img string
-		img = "/d/" + utils.UpDocument(utils.TgFileData(header.Filename, file))
-		res = conf.UploadResponse{
-			Code:    1,
-			Message: img,
+		img := conf.FileRoute + utils.UpDocument(utils.TgFileData(header.Filename, file))
+		if img != conf.FileRoute {
+			res = conf.UploadResponse{
+				Code:    1,
+				Message: img,
+				ImgUrl:  strings.TrimSuffix(conf.Domain, "/") + img,
+			}
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
@@ -79,6 +69,7 @@ func UploadImageAPI(w http.ResponseWriter, r *http.Request) {
 	// 如果不是POST请求，返回错误响应
 	http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 }
+
 func errJsonMsg(msg string, w http.ResponseWriter) {
 	// 这里示例直接返回JSON响应
 	response := conf.UploadResponse{
@@ -89,9 +80,10 @@ func errJsonMsg(msg string, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
+
 func D(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-	id := strings.TrimPrefix(path, "/d/")
+	id := strings.TrimPrefix(path, conf.FileRoute)
 	if id == "" {
 		// 设置响应的状态码为 404
 		w.WriteHeader(http.StatusNotFound)
@@ -101,60 +93,71 @@ func D(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 发起HTTP GET请求来获取Telegram图片
-	resp, err := http.Get(utils.GetDownloadUrl(id))
+	fileUrl, _ := utils.GetDownloadUrl(id)
+	resp, err := http.Get(fileUrl)
 	if err != nil {
 		http.Error(w, "Failed to fetch content", http.StatusInternalServerError)
 		return
 	}
-	defer resp.Body.Close()
-	rType := resp.Header.Get("Content-Type")
 	w.Header().Set("Content-Disposition", "inline") // 设置为 "inline" 以支持在线播放
 	// 检查Content-Type是否为图片类型
 	if !strings.HasPrefix(resp.Header.Get("Content-Type"), "application/octet-stream") {
-		// 设置响应的状态码为 404
 		w.WriteHeader(http.StatusNotFound)
-		// 写入响应内容
 		w.Write([]byte("404 Not Found"))
 		return
 	}
-	// 读取前512个字节以用于文件类型检测
-	buffer := make([]byte, 512)
-	n, err := resp.Body.Read(buffer)
+	contentLength, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil {
+		log.Println("获取Content-Length出错:", err)
+		return
+	}
+	buffer := make([]byte, contentLength)
+	n, err := resp.Body.Read(buffer)
+	defer resp.Body.Close()
+	if err != nil && err != io.ErrUnexpectedEOF {
 		log.Println("读取响应主体数据时发生错误:", err)
 		return
 	}
 	// 输出文件内容到控制台
 	if string(buffer[:12]) == "tgstate-blob" {
 		content := string(buffer)
-		lines := strings.Fields(content)
-		log.Println("这是一个分块文件,文件名:" + lines[1])
+		lines := strings.Split(content, "\n")
+		log.Println("分块文件:" + lines[1])
+		var fileSize string
+		var startLine = 2
+		if strings.HasPrefix(lines[2], "size") {
+			fileSize = lines[2][len("size"):]
+			startLine = startLine + 1
+		}
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.Header().Set("Content-Disposition", "attachment; filename=\""+lines[1]+"\"")
-		for i := 2; i < len(lines); i++ {
-			blobResp, err := http.Get(utils.GetDownloadUrl(regexp.MustCompile("[^a-zA-Z0-9_-]").ReplaceAllString(lines[i], "")))
+		w.Header().Set("Content-Length", fileSize)
+		for i := startLine; i < len(lines); i++ {
+			fileStatus := false
+			var fileUrl string
+			var reTry = 0
+			for !fileStatus {
+				if reTry > 0 {
+					time.Sleep(5 * time.Second)
+				}
+				reTry = reTry + 1
+				fileUrl, fileStatus = utils.GetDownloadUrl(strings.ReplaceAll(lines[i], " ", ""))
+			}
+			blobResp, err := http.Get(fileUrl)
 			if err != nil {
 				http.Error(w, "Failed to fetch content", http.StatusInternalServerError)
 				return
 			}
-
-			// 将文件名设置到Content-Disposition标头
-			blobResp.Header.Set("Content-Disposition", "attachment; filename=\""+lines[1]+"\"")
-
-			defer blobResp.Body.Close()
-
 			_, err = io.Copy(w, blobResp.Body)
+			blobResp.Body.Close()
 			if err != nil {
 				log.Println("写入响应主体数据时发生错误:", err)
 				return
 			}
 		}
-
 	} else {
 		// 使用DetectContentType函数检测文件类型
-		rType = http.DetectContentType(buffer)
-		w.Header().Set("Content-Type", rType)
-		// 写入前512个字节到响应w
+		w.Header().Set("Content-Type", http.DetectContentType(buffer))
 		_, err = w.Write(buffer[:n])
 		if err != nil {
 			http.Error(w, "Failed to write content", http.StatusInternalServerError)
@@ -162,8 +165,8 @@ func D(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		_, err = io.Copy(w, resp.Body)
+		resp.Body.Close()
 		if err != nil {
-			//http.Error(w, "Failed to show content", http.StatusInternalServerError)
 			log.Println(http.StatusInternalServerError)
 			return
 		}
@@ -182,16 +185,14 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// 读取头部模板
-	headerPath := "templates/header.tmpl"
-	headerFile, err := assets.Templates.ReadFile(headerPath)
+	headerFile, err := assets.Templates.ReadFile("templates/header.tmpl")
 	if err != nil {
 		http.Error(w, "Header template not found", http.StatusNotFound)
 		return
 	}
 
 	// 读取页脚模板
-	footerPath := "templates/footer.tmpl"
-	footerFile, err := assets.Templates.ReadFile(footerPath)
+	footerFile, err := assets.Templates.ReadFile("templates/footer.tmpl")
 	if err != nil {
 		http.Error(w, "Footer template not found", http.StatusNotFound)
 		return
@@ -277,11 +278,12 @@ func Pwd(w http.ResponseWriter, r *http.Request) {
 
 func Middleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// 只有当密码设置并且不为"none"时，才进行检查
 		if conf.Pass != "" && conf.Pass != "none" {
-			// 在这里检查cookie
-			cookie, err := r.Cookie("p")
-			if err != nil || cookie.Value != conf.Pass {
-				// 如果cookie不存在或值不为110，则重定向到/pwd
+			if strings.HasPrefix(r.URL.Path, "/api") && r.URL.Query().Get("pass") == conf.Pass {
+				return
+			}
+			if cookie, err := r.Cookie("p"); err != nil || cookie.Value != conf.Pass {
 				http.Redirect(w, r, "/pwd", http.StatusSeeOther)
 				return
 			}

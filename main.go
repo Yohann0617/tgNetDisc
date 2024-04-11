@@ -14,7 +14,7 @@ import (
 )
 
 var webPort string
-var index = true
+var OptApi = true
 
 func main() {
 	//判断是否设置参数
@@ -27,52 +27,38 @@ func main() {
 }
 
 func web() {
-	if conf.Pass != "" && conf.Pass != "none" {
-		http.HandleFunc("/pwd", control.Pwd)
-	}
-	http.HandleFunc("/d/", control.D)
-	http.HandleFunc("/api", control.Middleware(control.UploadImageAPI))
-	if index {
+	http.HandleFunc(conf.FileRoute, control.D)
+	if OptApi {
+		if conf.Pass != "" && conf.Pass != "none" {
+			http.HandleFunc("/pwd", control.Pwd)
+		}
+		http.HandleFunc("/api", control.Middleware(control.UploadImageAPI))
 		http.HandleFunc("/", control.Middleware(control.Index))
 	}
-	listener, err := net.Listen("tcp", ":"+webPort)
-	if err != nil {
+
+	if listener, err := net.Listen("tcp", ":"+webPort); err != nil {
 		fmt.Printf("端口 %s 已被占用\n", webPort)
-		return
-	}
-	defer listener.Close()
-	fmt.Printf("启动Web服务器，监听端口 %s\n", webPort)
-	err = http.Serve(listener, nil)
-	if err != nil {
-		fmt.Println(err)
+	} else {
+		defer listener.Close()
+		fmt.Printf("启动Web服务器，监听端口 %s\n", webPort)
+		if err := http.Serve(listener, nil); err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
 func init() {
 	flag.StringVar(&webPort, "port", "8088", "Web Port")
-	flag.StringVar(&conf.BotToken, "token", "", "Bot Token")
-	flag.StringVar(&conf.ChannelName, "channel", "", "Channel Name")
-	flag.StringVar(&conf.Pass, "pass", "", "Visit Password")
-	flag.StringVar(&conf.Mode, "mode", "", "Run mode")
-	flag.StringVar(&conf.Domain, "domain", "", "domain name")
-	indexPtr := flag.Bool("index", false, "Show Index")
+	flag.StringVar(&conf.BotToken, "token", os.Getenv("TOKEN"), "Bot Token")
+	flag.StringVar(&conf.ChannelName, "channel", os.Getenv("CHANNEL"), "Channel Name")
+	flag.StringVar(&conf.Pass, "pass", os.Getenv("PASS"), "Visit Password")
+	flag.StringVar(&conf.Mode, "mode", os.Getenv("MODE"), "Run mode")
+	flag.StringVar(&conf.Domain, "domain", os.Getenv("DOMAIN"), "domain name")
 	flag.Parse()
-	if *indexPtr {
-		index = false
+	if conf.Mode == "m" {
+		OptApi = false
 	}
-	if conf.BotToken == "" {
-		conf.BotToken = os.Getenv("TOKEN")
-	}
-	if conf.ChannelName == "" {
-		conf.ChannelName = os.Getenv("CHANNEL")
-	}
-	if conf.Mode == "" {
-		conf.Mode = os.Getenv("MODE")
-	}
-	if conf.Pass == "" {
-		conf.Pass = os.Getenv("PASS")
-	}
-	if conf.Domain == "" {
-		conf.Domain = os.Getenv("DOMAIN")
+	if conf.Mode != "pan" && conf.Mode != "m" {
+		conf.Mode = "pan"
 	}
 }
