@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -29,7 +28,7 @@ func UploadImageAPI(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer file.Close()
-		if conf.Mode != "p" && r.ContentLength > 20*1024*1024 {
+		if conf.Mode != "pan" && r.ContentLength > 20*1024*1024 {
 			// 检查文件大小
 			errJsonMsg("File size exceeds 20MB limit", w)
 			return
@@ -44,7 +43,7 @@ func UploadImageAPI(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 		}
-		if conf.Mode != "p" && !valid {
+		if conf.Mode != "pan" && !valid {
 			errJsonMsg("Invalid file type. Only .jpg, .jpeg, and .png are allowed.", w)
 			// http.Error(w, "Invalid file type. Only .jpg, .jpeg, and .png are allowed.", http.StatusBadRequest)
 			return
@@ -177,7 +176,7 @@ func D(w http.ResponseWriter, r *http.Request) {
 // Index 首页
 func Index(w http.ResponseWriter, r *http.Request) {
 	htmlPath := "templates/images.tmpl"
-	if conf.Mode == "p" {
+	if conf.Mode == "pan" {
 		htmlPath = "templates/files.tmpl"
 	}
 	file, err := assets.Templates.ReadFile(htmlPath)
