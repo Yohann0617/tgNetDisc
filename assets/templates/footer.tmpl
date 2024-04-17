@@ -1,7 +1,7 @@
 {{define "public/footer"}}
 <script>
     function uploadFile(file) {
-        var limit = 50 * 1024 * 1024;
+        var limit = 20 * 1024 * 1024;
         if (file.size <= limit) {
             uploadImg(file, 1).then((url) => {
                 // 处理上传成功的情况
