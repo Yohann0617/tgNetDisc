@@ -1,7 +1,7 @@
 [中文](https://github.com/Yohann0617/tgNetDisc/blob/master/README.md) | [EN](https://github.com/Yohann0617/tgNetDisc/blob/master/README_EN.md)
 # tgNetDisc
 >🤖Use the Telegram interface (requires a VPS that can connect to the Internet), ♾️️ unlimited capacity, no limits on file formats, no limits on file content😏, takes up very little memory and disk space📁, lightweight and convenient.
->Files are stored on Telegram☁️ side, with good security🔒 and sustainability.
+>Files are stored on Telegram☁️ side, with good security🔒 and durability.
 >Large files will be uploaded in parts (not fast), but uploading very large files is not supported.
 >Successful upload will generate external links in the form of HTML, Markdown, and BBCode🔗, which can be used as image beds and file download URLs.
 >Test address:☞[tgNetDisc](https://tgnetdisc.19990617.xyz)☜
