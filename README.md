@@ -61,6 +61,15 @@ yohannfan/yohann-netdisc:latest
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/844a61aa-cfd2-40b3-b63c-bb9de0fb8438)
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/227b83af-7c83-4b22-ba89-9f21606e44e9)
 
+## API请求示例
+```bash
+curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" https://hh.abc.com/api
+```
+如果设置了密码：
+```bash
+curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "p=YOURPASSWORD" https://hh.abc.com/api
+```
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)

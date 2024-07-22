@@ -61,6 +61,15 @@ For cloud storage mode, use the -mode pan parameter, like this:
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/729b766c-0cb0-49d3-bca0-130a98867368)
 ![image](https://github.com/Yohann0617/tgNetDisc/assets/75626191/227b83af-7c83-4b22-ba89-9f21606e44e9)
 
+## API request example
+```bash
+curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" https://hh.abc.com/api
+```
+If a password is set:
+```bash
+curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "p=YOURPASSWORD" https://hh.abc.com/api
+```
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)

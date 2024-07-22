@@ -273,7 +273,7 @@ func Pwd(w http.ResponseWriter, r *http.Request) {
 		Value: r.FormValue("p"),
 	}
 	http.SetCookie(w, &cookie)
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, conf.Domain, http.StatusSeeOther)
 }
 
 func Middleware(next http.HandlerFunc) http.HandlerFunc {
