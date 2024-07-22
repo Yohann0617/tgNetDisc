@@ -70,6 +70,30 @@ curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" http
 curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "p=YOURPASSWORD" https://hh.abc.com/api
 ```
 
+## 自定义URL的Nginx反向代理配置
+如不需要可忽略~
+<details>
+    <summary> ☜ 核心配置</summary>
+<br>
+
+```bash
+        # 网盘
+        location /tgState {
+            proxy_pass http://localhost:8088;
+        }
+        location ~ ^/tgState/(d|pwd|api)(.*)$ {
+            limit_req zone=mylimit burst=20;
+            proxy_pass http://localhost:8088/$1$2;
+        }
+        location /pwd {
+            proxy_pass http://localhost:8088;
+        }
+```
+
+<br>
+
+</details>
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)

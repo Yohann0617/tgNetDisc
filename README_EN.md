@@ -70,6 +70,30 @@ If a password is set:
 curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "p=YOURPASSWORD" https://hh.abc.com/api
 ```
 
+## Custom URL Nginx reverse proxy configuration
+Ignore if not needed~
+<details>
+<summary> ☜ Core configuration</summary>
+<br>
+
+```bash
+        # Netdisk
+        location /tgState {
+            proxy_pass http://localhost:8088;
+        }
+        location ~ ^/tgState/(d|pwd|api)(.*)$ {
+            limit_req zone=mylimit burst=20;
+            proxy_pass http://localhost:8088/$1$2;
+        }
+        location /pwd {
+            proxy_pass http://localhost:8088;
+        }
+```
+
+<br>
+
+</details>
+
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)
