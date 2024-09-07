@@ -16,8 +16,9 @@
 Pull the personal registry image and start the container:
 
 ```bash
-docker run -d --network=host \
+docker run -d --restart=always \
 --name netdisc \
+-p 8088:8088 \
 -e TOKEN=xxx \
 -e CHANNEL=xxx \
 -e MODE=pan \
@@ -70,28 +71,37 @@ If a password is set:
 curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "p=YOURPASSWORD" https://hh.abc.com/api
 ```
 
-## Custom URL Nginx reverse proxy configuration
-Ignore if not needed~
+## Nginx reverse proxy configuration
+If not needed, you can ignore~
 <details>
 <summary> ☜ Core configuration</summary>
 <br>
+General reverse proxy core configuration:
 
 ```bash
-        # Netdisk
-        location /tgState {
-            proxy_pass http://localhost:8088;
-        }
-        location ~ ^/tgState/(d|pwd|api)(.*)$ {
-            limit_req zone=mylimit burst=20;
-            proxy_pass http://localhost:8088/$1$2;
-        }
-        location /pwd {
-            proxy_pass http://localhost:8088;
-        }
+location / {
+proxy_pass http://localhost:8088;
+proxy_method $request_method;
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+
+Custom URL reverse proxy core configuration:
+
+```bash
+# Netdisk
+location /tgState {
+proxy_pass http://localhost:8088;
+}
+location ~ ^/tgState/(d|pwd|api)(.*)$ {
+limit_req zone=mylimit burst=20; proxy_pass http://localhost:8088/$1$2; } location /pwd { proxy_pass http://localhost:8088; } 
 ```
 
 <br>
-
+ 
 </details>
 
 ## Stargazers over time

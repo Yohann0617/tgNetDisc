@@ -16,8 +16,9 @@
 拉取个人镜像仓库镜像并启动容器：
 
 ```bash
-docker run -d --network=host \
+docker run -d --restart=always \
 --name netdisc \
+-p 8088:8088 \
 -e TOKEN=xxx \
 -e CHANNEL=xxx \
 -e MODE=pan \
@@ -70,11 +71,25 @@ curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" http
 curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "p=YOURPASSWORD" https://hh.abc.com/api
 ```
 
-## 自定义URL的Nginx反向代理配置
+## Nginx反向代理配置
 如不需要可忽略~
 <details>
     <summary> ☜ 核心配置</summary>
 <br>
+常规反代核心配置：
+
+```bash
+        location / {
+            proxy_pass http://localhost:8088;
+            proxy_method $request_method;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+```
+
+自定义URL的反向代理核心配置:
 
 ```bash
         # 网盘
