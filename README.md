@@ -12,6 +12,15 @@
 - `DOMAIN`是域名，可以不用配置
 - `PASS`是密码，可以不用配置
 - `CHANNEL`可以是频道地址也可以是chatId（可以通过 [@getidsbot](https://t.me/getidsbot) 这个机器人获取）。如果是频道，需要将频道公开，并将机器人拉入频道，设置为管理员，频道地址格式如：`@yohannChannl`。引用文件（分片文件引用`fileAll.txt`文件）并回复`get`，如果配置了`DOMAIN`域名参数，会返回完整url，反之则会返回文件id（base64编码），通过`域名`+`/d/`+`文件id`可以直接下载该文件，如果是图片则可以直接查看。
+- 支持的系统架构：
+  - linux/amd64 
+  - linux/arm64
+  - linux/arm/v6
+  - linux/arm/v7
+  - linux/386
+  - linux/ppc64le
+  - linux/s390x
+  - linux/riscv64 
 
 拉取个人镜像仓库镜像并启动容器：
 

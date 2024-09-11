@@ -12,6 +12,15 @@
 - `DOMAIN` is the domain name and does not need to be configured.
 - `PASS` is the password and does not need to be configured.
 - `CHANNEL` can be the channel address or chatId (can be obtained through the robot [@getidsbot](https://t.me/getidsbot)). If it is a channel, you need to make the channel public, pull the robot into the channel, and set it as an administrator. The channel address format is such as: `@yohannChannl`. Reference the file (for fragmented files, reference the `fileAll.txt` file) and reply to `get`. If the `DOMAIN` domain name parameter is configured, the complete URL will be returned. Otherwise, the file id (base64 encoding) will be returned. Pass `Domain name`+`/d/`+`File id` can directly download the file, and if it is a picture, it can be viewed directly.
+- Supported system architectures:
+  - linux/amd64
+  - linux/arm64
+  - linux/arm/v6
+  - linux/arm/v7
+  - linux/386
+  - linux/ppc64le
+  - linux/s390x
+  - linux/riscv64
 
 Pull the personal registry image and start the container:
 
