@@ -4,7 +4,7 @@
 >Files are stored on Telegram☁️ side, with good security🔒 and durability.
 >Large files will be uploaded in parts (not fast), but uploading very large files is not supported.
 >Successful upload will generate external links in the form of HTML, Markdown, and BBCode🔗, which can be used as image beds and file download URLs.
->Test address:☞[tgNetDisc](https://tgnetdisc.yohann.us.kg)☜
+>Test address:☞[tgNetDisc](https://tgnetdisc.yohann.nyc.mn)☜
 >Original Author's Address:[https://github.com/csznet/tgState](https://github.com/csznet/tgState), On this basis, some modifications are made.
 
 ## Docker One-click deployment (recommended 🏆)
