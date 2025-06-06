@@ -121,3 +121,5 @@ curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)
+
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
