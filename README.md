@@ -122,4 +122,10 @@ curl -X POST -F "image=@/root/test/tgNetDisc;type=application/octet-stream" -b "
 
 [![Stargazers over time](https://starchart.cc/Yohann0617/tgNetDisc.svg)](https://starchart.cc/Yohann0617/tgNetDisc)
 
+## 🙏特别鸣谢
 [![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
+
+
+感谢 YxVM 对本项目的大力支持！ [高性价比服务器购买链接](https://yxvm.com/aff.php?aff=829)
+
+感谢 [NodeSupport](https://github.com/NodeSeekDev/NodeSupport) 赞助了本项目
